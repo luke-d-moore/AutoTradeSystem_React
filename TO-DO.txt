@@ -1,0 +1,10 @@
+Developer Notes
+
+Make a Front End which can;
+
+Display Current Strategies that have yet to be actioned
+
+Submit a new Strategy which will be sent to the WebApi and be actioned
+
+Delete Strategies from the list of current Strategies that have yet to be implemented
+
