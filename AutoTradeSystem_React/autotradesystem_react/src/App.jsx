@@ -49,11 +49,11 @@ function App() {
     return (
         <div className="container">
             <div className="container">
-                <h1>Trading Order System</h1>
+                <h1>AutoTradeSystem</h1>
 
                 {/* Section 1: Order Form */}
                 <section className="form-section">
-                    <h2>Place a New Order</h2>
+                    <h2>Add New Trading Strategy</h2>
                     <form onSubmit={handleSubmit} className="order-form">
                         <div className="form-field">
                             <label htmlFor="ticker">Ticker</label>
@@ -113,7 +113,7 @@ function App() {
             <div className="container">
                 {/* Section 2: Past Orders Table */}
                 <section className="orders-section">
-                    <h2>Past Orders</h2>
+                    <h2>Current Trading Strategies</h2>
                     {orders.length === 0 ? (
                         <p>No orders have been placed yet.</p>
                     ) : (
