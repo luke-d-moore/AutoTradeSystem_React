@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 // Replace with your actual API endpoint for prices
-const API_URL = 'https://localhost:44351/api/Price';
+const API_URL = 'https://localhost:7250/api/Price/GetAllPrices';
 
 function MarketPrices() {
     const [data, setData] = useState({}); // Change initial state to an object
@@ -32,7 +32,7 @@ function MarketPrices() {
 
         const interval = setInterval(() => {
             fetchData();
-        }, 60000); // 60000 milliseconds = 60 seconds
+        }, 5000); // 60000 milliseconds = 60 seconds
 
         return () => clearInterval(interval);
     }, []);
