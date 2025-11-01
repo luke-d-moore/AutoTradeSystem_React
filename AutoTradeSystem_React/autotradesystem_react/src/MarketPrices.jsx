@@ -4,51 +4,74 @@ import React, { useState, useEffect } from 'react';
 const API_URL = 'https://localhost:7250/api/Price/GetAllPrices';
 
 function MarketPrices() {
-    const [data, setData] = useState({}); // Change initial state to an object
+    // data is initialized as an empty object, serving as the safe default value
+    const [data, setData] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     const fetchData = async () => {
+        // Clear previous errors and set loading state before a new attempt
+        setError(null);
+        setLoading(true);
+
         try {
-            setLoading(true);
             const response = await fetch(API_URL);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const result = await response.json();
 
-            // Update state with the nested 'Prices' object
-            setData(result.Prices);
+            // Assume the API returns an object like { Prices: { Ticker: Value } }
+            setData(result.Prices || {});
         } catch (e) {
+            // Set the error state
+            setData({});
             setError(e.message);
             console.error("Failed to fetch market prices:", e);
         } finally {
+            // Always set loading to false after the fetch operation finishes
             setLoading(false);
         }
     };
 
     useEffect(() => {
+        // Initial fetch upon component mount
         fetchData();
 
-        const interval = setInterval(() => {
+        // Set up the interval for continuous polling
+        const intervalId = setInterval(() => {
+            console.log("Attempting automatic refresh...");
             fetchData();
-        }, 5000); // 60000 milliseconds = 60 seconds
+        }, 5000); // Poll every 5 seconds
 
-        return () => clearInterval(interval);
-    }, []);
+        // Cleanup function to clear the interval when the component unmounts
+        return () => clearInterval(intervalId);
+    }, []); // Empty dependency array means this effect runs once
 
-    if (loading) {
+    // --- Render Logic ---
+
+    // If loading for the very first time, show only loading indicator
+    if (loading && Object.keys(data).length === 0 && !error) {
         return <div>Loading market prices...</div>;
     }
 
+    // If there is an error, display the error message and let the interval continue retrying in the background.
     if (error) {
-        return <div>Error fetching prices: {error}</div>;
+        return (
+            <section className="prices-section">
+                <h2>Live Market Prices</h2>
+                <div className="error-message">Error fetching prices: {error}</div>
+                <div className="retry-message">Automatic retry happening every 5 seconds...</div>
+                {loading && <p>Attempting to reload now...</p>}
+            </section>
+        );
     }
 
-    // Use Object.entries to map over the key-value pairs
+    // Default success view
     return (
         <section className="prices-section">
             <h2>Live Market Prices</h2>
+            {loading && <p>Refreshing prices...</p>}
             <table className="prices-table">
                 <thead>
                     <tr>
@@ -57,6 +80,7 @@ function MarketPrices() {
                     </tr>
                 </thead>
                 <tbody>
+                    {/* Use Object.entries to map over the key-value pairs */}
                     {Object.entries(data).map(([code, price]) => (
                         <tr key={code}>
                             <td>{code}</td>
