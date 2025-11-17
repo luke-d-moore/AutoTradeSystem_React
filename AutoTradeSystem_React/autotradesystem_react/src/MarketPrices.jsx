@@ -25,7 +25,7 @@ function MarketPrices() {
             setData(result.Prices || {});
         } catch (e) {
             // Set the error state
-            setData({});
+            //setData({});
             setError(e.message);
             console.error("Failed to fetch market prices:", e);
         } finally {
@@ -50,19 +50,57 @@ function MarketPrices() {
 
     // --- Render Logic ---
 
-    // If loading for the very first time, show only loading indicator
-    if (loading && Object.keys(data).length === 0 && !error) {
-        return <div>Loading market prices...</div>;
-    }
+    //// If loading for the very first time, show only loading indicator
+    //if (loading && Object.keys(data).length === 0 && !error) {
+    //    return (
+    //        <section className="prices-section">
+    //            <h2>Live Market Prices</h2>
+    //            <div>Loading market prices...</div>
+    //            <table className="prices-table">
+    //                <thead>
+    //                    <tr>
+    //                        <th>Ticker</th>
+    //                        <th>Price</th>
+    //                    </tr>
+    //                </thead>
+    //                <tbody>
+    //                    {/* Use Object.entries to map over the key-value pairs */}
+    //                    {Object.entries(data).map(([code, price]) => (
+    //                        <tr key={code}>
+    //                            <td>{code}</td>
+    //                            <td>${price.toFixed(2)}</td>
+    //                        </tr>
+    //                    ))}
+    //                </tbody>
+    //            </table>
+    //        </section>
+    //    );
+    //}
 
     // If there is an error, display the error message and let the interval continue retrying in the background.
     if (error) {
         return (
             <section className="prices-section">
                 <h2>Live Market Prices</h2>
-                <div className="error-message">Error fetching prices: {error}</div>
-                <div className="retry-message">Automatic retry happening every 5 seconds...</div>
-                {loading && <p>Attempting to reload now...</p>}
+                <div className="error-message">Error getting latest prices</div>
+                <div className="retry-message">Automatic retry happening in 5 seconds</div>
+                <table className="prices-table">
+                    <thead>
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {/* Use Object.entries to map over the key-value pairs */}
+                        {Object.entries(data).map(([code, price]) => (
+                            <tr key={code}>
+                                <td>{code}</td>
+                                <td>${price.toFixed(2)}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </section>
         );
     }
@@ -71,7 +109,7 @@ function MarketPrices() {
     return (
         <section className="prices-section">
             <h2>Live Market Prices</h2>
-            {loading && <p>Refreshing prices...</p>}
+            {/*{loading && <p>Refreshing prices...</p>}*/}
             <table className="prices-table">
                 <thead>
                     <tr>
