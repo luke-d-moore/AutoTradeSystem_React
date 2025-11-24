@@ -8,6 +8,7 @@ function MarketPrices() {
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [lastUpdated, setLastUpdated] = useState(null);
 
     const fetchData = async () => {
         // Clear previous errors and set loading state before a new attempt
@@ -23,6 +24,7 @@ function MarketPrices() {
 
             // Assume the API returns an object like { Prices: { Ticker: Value } }
             setData(result.Prices || {});
+            setLastUpdated(new Date());
         } catch (e) {
             // Set the error state
             //setData({});
@@ -82,6 +84,7 @@ function MarketPrices() {
         return (
             <section className="prices-section">
                 <h2>Live Market Prices</h2>
+                {lastUpdated && <p>Last updated: {lastUpdated.toLocaleTimeString()}</p>}
                 <div className="error-message">Error getting latest prices</div>
                 <div className="retry-message">Automatic retry happening in 5 seconds</div>
                 <table className="prices-table">
@@ -105,11 +108,10 @@ function MarketPrices() {
         );
     }
 
-    // Default success view
     return (
         <section className="prices-section">
             <h2>Live Market Prices</h2>
-            {/*{loading && <p>Refreshing prices...</p>}*/}
+            {lastUpdated && <p>Last updated: {lastUpdated.toLocaleTimeString()}</p>}
             <table className="prices-table">
                 <thead>
                     <tr>
@@ -118,7 +120,6 @@ function MarketPrices() {
                     </tr>
                 </thead>
                 <tbody>
-                    {/* Use Object.entries to map over the key-value pairs */}
                     {Object.entries(data).map(([code, price]) => (
                         <tr key={code}>
                             <td>{code}</td>

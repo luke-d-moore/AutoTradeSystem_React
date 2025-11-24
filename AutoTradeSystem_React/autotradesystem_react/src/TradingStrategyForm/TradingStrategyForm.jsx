@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import DropdownComponent from '../DropDownComponent/DropDownComponent';
 
 const TradingStrategyForm = () => {
     // State to manage form inputs
@@ -11,7 +12,7 @@ const TradingStrategyForm = () => {
     const [message, setMessage] = useState('');
     const [error, setError] = useState(null);
 
-    const API_URL = 'https://localhost:44351/api/TradingStrategy';
+    const API_URL = 'https://localhost:7158/api/TradingStrategy';
 
     // Handle input changes
     const handleChange = (e) => {
@@ -61,15 +62,17 @@ const TradingStrategyForm = () => {
             console.log('Success:', result);
 
             // Optionally reset the form
-            // setFormData({ Ticker: '', TradeAction: 0, PriceChange: 0.0, Quantity: 0 });
+             setFormData({ Ticker: '', TradeAction: 0, PriceChange: 0.0, Quantity: 0 });
 
         } catch (err) {
             // Handle errors during the fetch operation
-            setError(err.message);
+            setError('Failed to submit strategy');
             setMessage('');
             console.error('Error:', err);
         }
     };
+
+    const TICKER_API_URL = 'https://localhost:7250/api/Price/GetTickers';
 
     return (
         <div>
@@ -77,25 +80,15 @@ const TradingStrategyForm = () => {
             <form onSubmit={handleSubmit}>
                 <div className="form-field">
                     <label htmlFor="Ticker">Ticker:</label>
-                    <input
-                        type="text"
+                    <DropdownComponent
                         id="Ticker"
                         name="Ticker"
                         value={formData.Ticker}
                         onChange={handleChange}
                         required
+                        apiEndpoint={TICKER_API_URL}
                     />
                 </div>
-                {/*<div className="form-field">*/}
-                {/*    <label htmlFor="TradeAction">Trade Action (0=Buy, 1=Sell):</label>*/}
-                {/*    <input*/}
-                {/*        type="number"*/}
-                {/*        id="TradeAction"*/}
-                {/*        name="TradeAction"*/}
-                {/*        value={formData.TradeAction}*/}
-                {/*        onChange={handleChange}*/}
-                {/*        required/>*/}
-                {/*</div>*/}
                 <div className="form-field">
                     <label htmlFor="TradeAction">Trade Action</label>
                     <select

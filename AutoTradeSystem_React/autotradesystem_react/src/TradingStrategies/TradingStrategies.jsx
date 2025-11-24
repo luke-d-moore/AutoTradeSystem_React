@@ -8,7 +8,7 @@ const TradingStrategies = () => {
     const [error, setError] = useState(null);
     const [lastUpdated, setLastUpdated] = useState(null);
 
-    const API_URL = 'https://localhost:44351/api/TradingStrategy';
+    const API_URL = 'https://localhost:7158/api/TradingStrategy';
     const POLLING_INTERVAL = 5000;
 
     const fetchStrategies = async () => {
@@ -56,13 +56,13 @@ const TradingStrategies = () => {
         return () => clearInterval(intervalId);
     }, []);
 
-    if (loading) {
-        return <div className="container"><p>Loading strategies...</p></div>;
-    }
+    //if (loading) {
+    //    return <div className="container"><p>Loading strategies...</p></div>;
+    //}
 
-    if (error) {
-        return <div className="container"><p style={{ color: 'red' }}>Error: {error}</p></div>;
-    }
+    //if (error) {
+    //    return <div className="container"><p style={{ color: 'red' }}>Error: {error}</p></div>;
+    //}
 
     return (
         <div className="container">

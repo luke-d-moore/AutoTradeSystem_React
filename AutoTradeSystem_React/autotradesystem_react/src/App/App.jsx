@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import './App.css';
-import MarketPrices from './MarketPrices'; // Import the new component
-import TradingStrategyForm from './TradingStrategyForm';
-import TradingStrategies from './TradingStrategies';
+import MarketPrices from '../MarketPrices/MarketPrices'; // Import the new component
+import TradingStrategyForm from '../TradingStrategyForm/TradingStrategyForm';
+import TradingStrategies from '../TradingStrategies/TradingStrategies';
 
 function App() {
     const [formData, setFormData] = useState({
