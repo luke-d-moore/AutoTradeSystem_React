@@ -28,7 +28,7 @@ const TradingStrategyForm = () => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
-            [name]: value,
+            [name]: Number(value),
         }));
     };
 
