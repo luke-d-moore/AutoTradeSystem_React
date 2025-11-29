@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import './TradingStrategies.css';
 
 const TradingStrategies = () => {
-    // We remove the <OrderData[]> generic types here
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -18,10 +17,9 @@ const TradingStrategies = () => {
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const data = await response.json(); // No explicit type assigned here
+            const data = await response.json(); 
 
             if (data.success && data.TradingStrategies) {
-                // The transformation logic remains largely the same
                 const transformedOrders = Object.entries(data.TradingStrategies).map(([id, strategyDetails]) => {
                     const strategy = strategyDetails.TradingStrategy;
                     const originalPrice = strategyDetails.OriginalPrice;
@@ -49,20 +47,11 @@ const TradingStrategies = () => {
         }
     };
 
-    // ... rest of the component (useEffect, return statement, etc.) ...
     useEffect(() => {
         fetchStrategies();
         const intervalId = setInterval(fetchStrategies, POLLING_INTERVAL);
         return () => clearInterval(intervalId);
     }, []);
-
-    //if (loading) {
-    //    return <div className="container"><p>Loading strategies...</p></div>;
-    //}
-
-    //if (error) {
-    //    return <div className="container"><p style={{ color: 'red' }}>Error: {error}</p></div>;
-    //}
 
     return (
             <section className="orders-section">

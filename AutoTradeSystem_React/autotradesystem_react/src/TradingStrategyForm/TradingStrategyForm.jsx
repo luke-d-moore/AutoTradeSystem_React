@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import DropdownComponent from '../DropDownComponent/DropDownComponent';
 
 const TradingStrategyForm = () => {
-    // State to manage form inputs
     const [formData, setFormData] = useState({
         Ticker: '',
         TradeAction: 0, 
@@ -14,12 +13,10 @@ const TradingStrategyForm = () => {
 
     const API_URL = 'https://localhost:7158/api/TradingStrategy';
 
-    // Handle input changes
     const handleChange = (e) => {
         const { name, value, type } = e.target;
         setFormData(prevData => ({
             ...prevData,
-            // Convert specific inputs to numbers for the API payload
             [name]: type === 'number' ? parseFloat(value) || parseInt(value) || 0 : value,
         }));
     };
@@ -32,9 +29,8 @@ const TradingStrategyForm = () => {
         }));
     };
 
-    // Handle form submission
     const handleSubmit = async (e) => {
-        e.preventDefault(); // Prevent default browser form submission
+        e.preventDefault(); 
 
         setMessage('Sending data...');
         setError(null);
@@ -44,28 +40,22 @@ const TradingStrategyForm = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // You might need to add other headers like Authorization if required by your API
                 },
-                // Convert the form state object to a JSON string
                 body: JSON.stringify(formData),
             });
 
             if (!response.ok) {
-                // If the server response was not ok, throw an error
-                const errorData = await response.json(); // Attempt to read error message from API
+                const errorData = await response.json(); 
                 throw new Error(errorData.message || 'Failed to submit strategy');
             }
 
-            // Handle successful response
-            const result = await response.json(); // The API might return the saved object or a confirmation
+            const result = await response.json(); 
             setMessage('Successfully submitted strategy');
             console.log('Success:', result);
 
-            // Optionally reset the form
              setFormData({ Ticker: '', TradeAction: 0, PriceChange: 0.0, Quantity: 0 });
 
         } catch (err) {
-            // Handle errors during the fetch operation
             setError('Failed to submit strategy');
             setMessage('');
             console.error('Error:', err);
@@ -105,7 +95,7 @@ const TradingStrategyForm = () => {
                     <label htmlFor="PriceChange">Price Change:</label>
                     <input
                         type="number"
-                        step="0.01" // Allows decimal input
+                        step="0.01" 
                         id="PriceChange"
                         name="PriceChange"
                         value={formData.PriceChange}

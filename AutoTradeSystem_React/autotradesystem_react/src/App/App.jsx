@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './App.css';
-import MarketPrices from '../MarketPrices/MarketPrices'; // Import the new component
+import MarketPrices from '../MarketPrices/MarketPrices';
 import TradingStrategyForm from '../TradingStrategyForm/TradingStrategyForm';
 import TradingStrategies from '../TradingStrategies/TradingStrategies';
 
@@ -14,7 +14,6 @@ function App() {
 
     const [orders, setOrders] = useState([]);
 
-    // Function to handle form input changes
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
@@ -23,7 +22,6 @@ function App() {
         }));
     };
 
-    // Function to handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!formData.ticker || !formData.amount || !formData.threshold) {
@@ -31,7 +29,6 @@ function App() {
             return;
         }
 
-        // Add a unique ID to the new order
         const newOrder = {
             ...formData,
             id: Date.now(),
@@ -39,7 +36,6 @@ function App() {
         };
 
         setOrders((prevOrders) => [...prevOrders, newOrder]);
-        // Reset form fields
         setFormData({
             ticker: '',
             amount: '',
