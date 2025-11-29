@@ -1,0 +1,25 @@
+
+
+.prices-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.prices-table th, .prices-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+.prices-table th {
+    background-color: lightskyblue;
+}
+
+.prices-table tr.even-row {
+    background-color: #f9f9f9;
+}
+
+.prices-table tr.odd-row {
+    background-color: #e6e6e6;
+}
+
