@@ -12,21 +12,23 @@
     margin-top: 10px;
 }
 
-    .orders-table th, .orders-table td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: left;
-    }
-
-    .orders-table th {
-        background-color: #f2f2f2;
-        font-weight: bold;
-    }
-
-.even-row {
-    background-color: #fafafa;
+.orders-table th {
+    background-color: lightskyblue;
+    font-weight: bold;
 }
 
-.odd-row {
-    background-color: #ffffff;
+.orders-table th,
+.orders-table td {
+    text-align: left;
+    padding: 12px;
+    border: 1px solid #ddd;
 }
+
+.orders-table tr.even-row {
+    background-color: #f9f9f9;
+}
+
+.orders-table tr.odd-row {
+    background-color: #e6e6e6;
+}
+

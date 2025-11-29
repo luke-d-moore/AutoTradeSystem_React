@@ -49,20 +49,27 @@ function App() {
     };
 
     return (
-        <div className="container">
-            <div className="container">
-                <h1>AutoTradeSystem</h1>
+        <div class="app-container">
+            <div>
+                <h1>AutoTradeSystem_React</h1>
             </div>
-            <div className="container">
-                <TradingStrategyForm /> {/* Render the new component here */}
-            </div>
-            <div className="container">
-                <MarketPrices /> {/* Render the new component here */}
-            </div>
-            <div className="container">
-                <TradingStrategies /> {/* Render the new component here */}
+            <div class="content-wrapper">
+                <div class="left-section">
+                    <div class="content-wrapper main-form">
+                        <div class="left-section">
+                            <TradingStrategyForm />
+                        </div>
+                        <div class="right-section">
+                            <MarketPrices />
+                        </div>
+                    </div>
+                </div>
+                <div class="right-section">
+                    <TradingStrategies />
+                </div>
             </div>
         </div>
+
     );
 }
 

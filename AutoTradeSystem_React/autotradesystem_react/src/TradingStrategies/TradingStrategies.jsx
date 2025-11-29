@@ -65,8 +65,6 @@ const TradingStrategies = () => {
     //}
 
     return (
-        <div className="container">
-            {/* ... (JSX table rendering part) ... */}
             <section className="orders-section">
                 <h2>Current Trading Strategies</h2>
                 {lastUpdated && <p>Last updated: {lastUpdated.toLocaleTimeString()}</p>}
@@ -92,7 +90,6 @@ const TradingStrategies = () => {
                         </tbody>
                     </table>
             </section>
-        </div>
     );
 };
 
