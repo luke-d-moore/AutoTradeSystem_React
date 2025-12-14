@@ -53,6 +53,7 @@ const TradingStrategies = () => {
                 const transformedOrders = Object.entries(data.TradingStrategies).map(([id, strategyDetails]) => {
                     const strategy = strategyDetails.TradingStrategy;
                     const originalPrice = strategyDetails.OriginalPrice;
+                    const actionPrice = strategyDetails.ActionPrice.toFixed(2);
                     const threshold = originalPrice > 0
                         ? (((strategyDetails.ActionPrice - originalPrice) / originalPrice) * 100).toFixed(2) + '%'
                         : 'N/A';
@@ -63,6 +64,7 @@ const TradingStrategies = () => {
                         quantity: strategy.Quantity,
                         tradeaction: strategy.TradeAction === 0 ? 'Buy' : 'Sell',
                         threshold: threshold,
+                        actionPrice: actionPrice,
                     };
                 });
                 setOrders(transformedOrders);
@@ -96,6 +98,7 @@ const TradingStrategies = () => {
                                 <th>Quantity</th>
                                 <th>TradeAction</th>
                                 <th>Threshold (%)</th>
+                                <th>Action Price</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -106,6 +109,7 @@ const TradingStrategies = () => {
                                     <td>{order.quantity}</td>
                                     <td>{order.tradeaction}</td>
                                     <td>{order.threshold}</td>
+                                    <td>${order.actionPrice}</td>
                                     <td>
                                         <img
                                             src={deleteIcon}
