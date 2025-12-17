@@ -33,6 +33,11 @@ h1, h2 {
     align-items: end;
 }
 
+.radio-form {
+    marginBottom: '20px'; 
+    padding: '10px';
+}
+
 .form-field {
     display: flex;
     flex-direction: column;
