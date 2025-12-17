@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DropdownComponent from '../DropDownComponent/DropDownComponent';
 
 const TradingStrategyForm = () => {
@@ -14,6 +14,16 @@ const TradingStrategyForm = () => {
     const [error, setError] = useState(null);
 
     const API_URL = 'https://localhost:7158/api/TradingStrategy';
+
+    useEffect(() => {
+        if (message || error) {
+            const timer = setTimeout(() => {
+                setMessage('');
+                setError(null);
+            }, 3000);
+            return () => clearTimeout(timer);
+        }
+    }, [message, error]);
 
     const handleChange = (e) => {
         const { name, value, type } = e.target;
