@@ -31,20 +31,20 @@ const TradingStrategyForm = () => {
         }));
     };
 
-    const handleTogglePriceChange = () => {
-        setUsePriceChange(true);
-        setFormData(prevData => ({
-            ...prevData,
-            ActionPrice: 0.0,
-        }));
-    };
-
     const handleToggleActionPrice = () => {
-        setUsePriceChange(false);
-        setFormData(prevData => ({
-            ...prevData,
-            PriceChange: 0.0,
-        }));
+        if (usePriceChange) {
+            setUsePriceChange(false);
+            setFormData(prevData => ({
+                ...prevData,
+                ActionPrice: 0.0,
+            }));
+        } else {
+            setUsePriceChange(true);
+            setFormData(prevData => ({
+                ...prevData,
+                PriceChange: 0.0,
+            }));
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -85,25 +85,17 @@ const TradingStrategyForm = () => {
         <div>
             <h2>Submit Trading Strategy</h2>
 
-            <div className="radio-form">
-                <div>
-                    <label>
-                        <input
-                            type="radio"
-                            checked={usePriceChange}
-                            onChange={handleTogglePriceChange}
-                        /> Use Price Change (%)
-                    </label>
-                </div>
-                <div>
-                    <label>
-                        <input
-                            type="radio"
-                            checked={!usePriceChange}
-                            onChange={handleToggleActionPrice}
-                        /> Use Specific Action Price
-                    </label>
-                </div>
+            <div>
+                <label className="switch">
+                    <input
+                        type="checkbox"
+                        id="toggle"
+                        checked={!usePriceChange}
+                        onChange={handleToggleActionPrice}
+                    />
+                    <span class="slider"></span>
+                </label>
+                <label className="switch-label">Use Specific Action Price</label>
             </div>
 
             <form onSubmit={handleSubmit}>
