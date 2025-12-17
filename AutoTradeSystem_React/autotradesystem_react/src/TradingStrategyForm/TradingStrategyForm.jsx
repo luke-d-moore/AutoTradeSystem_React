@@ -105,7 +105,7 @@ const TradingStrategyForm = () => {
                     />
                     <span class="slider"></span>
                 </label>
-                <label className="switch-label">Use Specific Action Price</label>
+                <label>Use Specific Action Price</label>
             </div>
 
             <form onSubmit={handleSubmit}>
