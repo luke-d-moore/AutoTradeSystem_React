@@ -6,6 +6,7 @@ const TradingStrategyForm = () => {
         Ticker: '',
         TradeAction: 0, 
         PriceChange: 0.0,
+        ActionPrice: 0.0,
         Quantity: 0,
     });
     const [message, setMessage] = useState('');
@@ -99,6 +100,18 @@ const TradingStrategyForm = () => {
                         id="PriceChange"
                         name="PriceChange"
                         value={formData.PriceChange}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div className="form-field">
+                    <label htmlFor="ActionPrice">Action Price:</label>
+                    <input
+                        type="number"
+                        step="0.01"
+                        id="ActionPrice"
+                        name="ActionPrice"
+                        value={formData.ActionPrice}
                         onChange={handleChange}
                         required
                     />
