@@ -45,22 +45,22 @@ function App() {
     };
 
     return (
-        <div class="app-container">
+        <div className="app-container">
             <div>
                 <h1>AutoTradeSystem_React</h1>
             </div>
-            <div class="content-wrapper">
-                <div class="left-section">
-                    <div class="content-wrapper main-form">
-                        <div class="left-section">
+            <div className="content-wrapper">
+                <div className="left-section">
+                    <div className="content-wrapper main-form">
+                        <div className="left-section">
                             <TradingStrategyForm />
                         </div>
-                        <div class="right-section">
+                        <div className="right-section">
                             <MarketPrices />
                         </div>
                     </div>
                 </div>
-                <div class="right-section">
+                <div className="right-section">
                     <TradingStrategies />
                 </div>
             </div>

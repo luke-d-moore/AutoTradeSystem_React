@@ -22,4 +22,26 @@
 .prices-table tr.odd-row {
     background-color: #e6e6e6;
 }
+.price-up {
+    color: #28a745 !important;
+    font-weight: bold;
+}
+
+.price-down {
+    color: #dc3545 !important;
+    font-weight: bold;
+}
+
+.prices-table td {
+    padding: 10px;
+    transition: color 0.3s ease;
+}
+
+.price-column{
+    width:60%;
+}
+
+.ticker-column {
+    width: 40%;
+}
 

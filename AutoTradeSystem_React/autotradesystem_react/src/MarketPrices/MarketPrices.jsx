@@ -5,6 +5,7 @@ const API_URL = 'https://localhost:7250/api/Price/GetAllPrices';
 
 function MarketPrices() {
     const [data, setData] = useState({});
+    const [prevData, setPrevData] = useState({});
     const [error, setError] = useState(null);
     const [lastUpdated, setLastUpdated] = useState(null);
 
@@ -26,8 +27,15 @@ function MarketPrices() {
             }
 
             const result = await response.json();
+            const newPrices = result.Prices || {};
 
-            setData(result.Prices || {});
+            const hasChanged = JSON.stringify(newPrices) !== JSON.stringify(data);
+
+            if (hasChanged) {
+                setPrevData(data);
+                setData(newPrices);
+            }
+
             setLastUpdated(new Date());
             setError(null);
 
@@ -45,14 +53,26 @@ function MarketPrices() {
 
     useEffect(() => {
         fetchData();
-
-        const intervalId = setInterval(() => {
-            console.log("Attempting automatic refresh...");
-            fetchData();
-        }, 5000); 
-
+        const intervalId = setInterval(fetchData, 5000);
         return () => clearInterval(intervalId);
-    }, []); 
+    }, [data]);
+
+    const getPriceChange = (code, currentPrice) => {
+        const previousPrice = prevData[code];
+        if (previousPrice === undefined) return null;
+
+        const diff = currentPrice - previousPrice;
+        const colorClass = diff ===0 ? '' : diff > 0 ? 'price-up' : 'price-down';
+        const sign = diff > 0 ? '+' : '';
+
+        return (
+            <span>(<span className={colorClass}>
+                {sign}{diff.toFixed(2)}
+            </span>)
+            </span>
+        );
+    };
+
 
     return (
         <section className="prices-section">
@@ -74,8 +94,8 @@ function MarketPrices() {
                 <tbody>
                     {Object.entries(data).map(([code, price], index) => (
                         <tr key={code} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
-                            <td>{code}</td>
-                            <td>${price.toFixed(2)}</td>
+                            <td className="ticker-column">{code}</td>
+                            <td className="price-column">${price.toFixed(2)} {getPriceChange(code, price)}</td>
                         </tr>
                     ))}
                 </tbody>

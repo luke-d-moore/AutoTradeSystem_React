@@ -103,7 +103,7 @@ const TradingStrategyForm = () => {
                         checked={!usePriceChange}
                         onChange={handleToggleActionPrice}
                     />
-                    <span class="slider"></span>
+                    <span className="slider"></span>
                 </label>
                 <label>Use Specific Action Price</label>
             </div>
