@@ -31,6 +31,11 @@ function MarketPrices() {
 
             const hasChanged = JSON.stringify(newPrices) !== JSON.stringify(data);
 
+//Interview Tip
+//In an interview, you can mention that JSON.stringify is a "quick and dirty" way to compare objects, 
+//but it has pitfalls like key - ordering.For a more production - ready approach, 
+//you would use a shallow equality function that iterates through keys or a library like Lodash(_.isEqual). 
+
             if (hasChanged) {
                 setPrevData(data);
                 setData(newPrices);
