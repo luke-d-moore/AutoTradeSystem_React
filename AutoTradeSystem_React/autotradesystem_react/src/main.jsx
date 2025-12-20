@@ -8,9 +8,12 @@ const container = document.getElementById('root');
 const root = createRoot(container);
 
 root.render(
-    <React.StrictMode>
-        <BrowserRouter>
-            <App />
-        </BrowserRouter>
-    </React.StrictMode>
+    <div>
+        <h1>AutoTradeSystem_React</h1>
+        <React.StrictMode>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+        </React.StrictMode>
+    </div>
 );

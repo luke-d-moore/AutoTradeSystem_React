@@ -3,6 +3,7 @@ import './App.css';
 import MarketPrices from '../MarketPrices/MarketPrices';
 import TradingStrategyForm from '../TradingStrategyForm/TradingStrategyForm';
 import TradingStrategies from '../TradingStrategies/TradingStrategies';
+import TradingStrategyEditView from '../TradingStrategies/TradingStrategyEdit';
 import { Routes, Route } from "react-router";
 import DetailView from '../MarketPrices/MarketPriceDetails';
 
@@ -48,7 +49,6 @@ function App() {
 
     return (
         <div className="app-container">
-            <h1>AutoTradeSystem_React</h1>
             <Routes>
                 <Route path="/" element={
                     <div className="content-wrapper">
@@ -70,6 +70,11 @@ function App() {
                 <Route path="/details/:ticker" element={
                     <div className="content-wrapper">
                         <DetailView />
+                    </div>
+                } />
+                <Route path="/tradingStrategyEdit/" element={
+                    <div className="content-wrapper">
+                        <TradingStrategyEditView />
                     </div>
                 } />
             </Routes>

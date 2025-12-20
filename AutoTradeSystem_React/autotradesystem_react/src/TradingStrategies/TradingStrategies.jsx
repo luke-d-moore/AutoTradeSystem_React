@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './TradingStrategies.css';
 import deleteIcon from './delete-24.ico'; 
+import { useNavigate } from 'react-router';
 
 const TradingStrategies = () => {
     const [orders, setOrders] = useState([]);
@@ -11,6 +12,12 @@ const TradingStrategies = () => {
 
     const API_URL = 'https://localhost:7158/api/TradingStrategy';
     const POLLING_INTERVAL = 5000;
+
+    const navigate = useNavigate();
+
+    const handleRowClick = (order) => {
+        navigate(`/tradingStrategyEdit/`, { state: { order } });
+    };
 
     const handleDelete = async (orderId) => {
         if (!window.confirm(`Are you sure you want to delete this strategy?`)) {
@@ -104,7 +111,10 @@ const TradingStrategies = () => {
                         </thead>
                         <tbody>
                             {orders.map((order, index) => (
-                                <tr key={order.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
+                                <tr key={order.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}
+                                    onClick={() => handleRowClick(order)}
+                                    style={{ cursor: 'pointer' }}
+                                >
                                     <td>{order.ticker}</td>
                                     <td>{order.quantity}</td>
                                     <td>{order.tradeaction}</td>
