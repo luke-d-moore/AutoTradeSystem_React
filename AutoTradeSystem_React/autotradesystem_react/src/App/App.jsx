@@ -3,6 +3,8 @@ import './App.css';
 import MarketPrices from '../MarketPrices/MarketPrices';
 import TradingStrategyForm from '../TradingStrategyForm/TradingStrategyForm';
 import TradingStrategies from '../TradingStrategies/TradingStrategies';
+import { Routes, Route } from "react-router";
+import DetailView from '../MarketPrices/MarketPriceDetails';
 
 function App() {
     const [formData, setFormData] = useState({
@@ -46,26 +48,32 @@ function App() {
 
     return (
         <div className="app-container">
-            <div>
-                <h1>AutoTradeSystem_React</h1>
-            </div>
-            <div className="content-wrapper">
-                <div className="left-section">
-                    <div className="content-wrapper main-form">
+            <h1>AutoTradeSystem_React</h1>
+            <Routes>
+                <Route path="/" element={
+                    <div className="content-wrapper">
                         <div className="left-section">
-                            <TradingStrategyForm />
+                            <div className="content-wrapper main-form">
+                                <div className="left-section">
+                                    <TradingStrategyForm />
+                                </div>
+                                <div className="right-section">
+                                    <MarketPrices />
+                                </div>
+                            </div>
                         </div>
                         <div className="right-section">
-                            <MarketPrices />
+                            <TradingStrategies />
                         </div>
                     </div>
-                </div>
-                <div className="right-section">
-                    <TradingStrategies />
-                </div>
-            </div>
+                } />
+                <Route path="/details/:ticker" element={
+                    <div className="content-wrapper">
+                        <DetailView />
+                    </div>
+                } />
+            </Routes>
         </div>
-
     );
 }
 

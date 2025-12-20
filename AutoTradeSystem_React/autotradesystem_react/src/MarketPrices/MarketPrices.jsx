@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './MarketPrices.css';
+import { useNavigate } from 'react-router';
 
 const API_URL = 'https://localhost:7250/api/Price/GetAllPrices';
 
@@ -8,6 +9,12 @@ function MarketPrices() {
     const [prevData, setPrevData] = useState({});
     const [error, setError] = useState(null);
     const [lastUpdated, setLastUpdated] = useState(null);
+
+    const navigate = useNavigate();
+
+    const handleRowClick = (ticker) => {
+        navigate(`/details/${ticker}`);
+    };
 
     const fetchData = async () => {
         const TIMEOUT_DURATION = 1000;
@@ -98,7 +105,12 @@ function MarketPrices() {
                 </thead>
                 <tbody>
                     {Object.entries(data).map(([code, price], index) => (
-                        <tr key={code} className={index % 2 === 0 ? 'even-row' : 'odd-row'}>
+                        <tr
+                            key={code}
+                            className={index % 2 === 0 ? 'even-row' : 'odd-row'}
+                            onClick={() => handleRowClick(code)}
+                            style={{ cursor: 'pointer' }}
+                        >
                             <td className="ticker-column">{code}</td>
                             <td className="price-column">${price.toFixed(2)} {getPriceChange(code, price)}</td>
                         </tr>
