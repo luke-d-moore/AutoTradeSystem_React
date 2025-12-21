@@ -8,45 +8,6 @@ import { Routes, Route } from "react-router";
 import DetailView from '../MarketPrices/MarketPriceDetails';
 
 function App() {
-    const [formData, setFormData] = useState({
-        ticker: '',
-        amount: '',
-        type: 'buy',
-        threshold: '',
-    });
-
-    const [orders, setOrders] = useState([]);
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => ({
-            ...prevData,
-            [name]: value,
-        }));
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!formData.ticker || !formData.amount || !formData.threshold) {
-            alert('Please fill in all fields.');
-            return;
-        }
-
-        const newOrder = {
-            ...formData,
-            id: Date.now(),
-            date: new Date().toLocaleString(),
-        };
-
-        setOrders((prevOrders) => [...prevOrders, newOrder]);
-        setFormData({
-            ticker: '',
-            amount: '',
-            type: 'buy',
-            threshold: '',
-        });
-    };
-
     return (
         <div className="app-container">
             <Routes>

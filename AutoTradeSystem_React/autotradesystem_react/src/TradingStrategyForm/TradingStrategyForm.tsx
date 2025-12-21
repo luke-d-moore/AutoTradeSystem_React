@@ -1,19 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import DropdownComponent from '../DropDownComponent/DropDownComponent';
 
-const TradingStrategyForm = () => {
-    const [usePriceChange, setUsePriceChange] = useState(true);
-    const [formData, setFormData] = useState({
+interface TradingStrategy {
+    Ticker: string;
+    TradeAction: number;
+    PriceChange: number;
+    ActionPrice: number;
+    Quantity: number;
+}
+
+const TradingStrategyForm: React.FC = () => {
+    const [usePriceChange, setUsePriceChange] = useState < boolean > (true);
+    const [formData, setFormData] = useState < TradingStrategy > ({
         Ticker: '',
         TradeAction: 0,
         PriceChange: 0.0,
         ActionPrice: 0.0,
         Quantity: 0,
     });
-    const [message, setMessage] = useState('');
-    const [error, setError] = useState(null);
+    const [message, setMessage] = useState < string > ('');
+    const [error, setError] = useState < string | null > (null);
 
     const API_URL = 'https://localhost:7158/api/TradingStrategy';
+    const TICKER_API_URL = 'https://localhost:7250/api/Price/GetTickers';
 
     useEffect(() => {
         if (message || error) {
@@ -25,15 +34,15 @@ const TradingStrategyForm = () => {
         }
     }, [message, error]);
 
-    const handleChange = (e) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
         setFormData(prevData => ({
             ...prevData,
-            [name]: type === 'number' ? parseFloat(value) || parseInt(value) || 0 : value,
+            [name]: type === 'number' ? parseFloat(value) || 0 : value,
         }));
     };
 
-    const handleInputChange = (e) => {
+    const handleInputChange = (e: ChangeEvent<HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({
             ...prevData,
@@ -44,22 +53,17 @@ const TradingStrategyForm = () => {
     const handleToggleActionPrice = () => {
         if (usePriceChange) {
             setUsePriceChange(false);
-            setFormData(prevData => ({
-                ...prevData,
-                ActionPrice: 0.0,
-            }));
+            setFormData(prevData => ({ ...prevData, ActionPrice: 0.0 }));
         } else {
             setUsePriceChange(true);
-            setFormData(prevData => ({
-                ...prevData,
-                PriceChange: 0.0,
-            }));
+            setFormData(prevData => ({ ...prevData, PriceChange: 0.0 }));
         }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const submissionData = { ...formData };
+
+        const submissionData: TradingStrategy = { ...formData };
         if (usePriceChange) {
             submissionData.ActionPrice = 0;
         } else {
@@ -84,12 +88,11 @@ const TradingStrategyForm = () => {
             setMessage('Successfully submitted strategy');
             setFormData({ Ticker: '', TradeAction: 0, PriceChange: 0.0, ActionPrice: 0.0, Quantity: 0 });
         } catch (err) {
-            setError('Failed to submit strategy');
+            const errorMessage = err instanceof Error ? err.message : 'Failed to submit strategy';
+            setError(errorMessage);
             setMessage('');
         }
     };
-
-    const TICKER_API_URL = 'https://localhost:7250/api/Price/GetTickers';
 
     return (
         <div>

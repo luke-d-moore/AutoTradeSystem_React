@@ -1,24 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, JSX } from 'react';
 import './MarketPrices.css';
 import { useNavigate } from 'react-router';
 
+interface PriceData {
+    [ticker: string]: number;
+}
+
+interface MarketPricesResponse {
+    Prices?: PriceData;
+}
+
 const API_URL = 'https://localhost:7250/api/Price/GetAllPrices';
 
-function MarketPrices() {
-    const [data, setData] = useState({});
-    const [prevData, setPrevData] = useState({});
-    const [error, setError] = useState(null);
-    const [lastUpdated, setLastUpdated] = useState(null);
+function MarketPrices(): JSX.Element {
+    const [data, setData] = useState < PriceData > ({});
+    const [prevData, setPrevData] = useState < PriceData > ({});
+    const [error, setError] = useState < string | null > (null);
+    const [lastUpdated, setLastUpdated] = useState < Date | null > (null);
 
     const navigate = useNavigate();
 
-    const handleRowClick = (ticker) => {
+    const handleRowClick = (ticker: string): void => {
         navigate(`/details/${ticker}`);
     };
 
-    const fetchData = async () => {
+    const fetchData = async (): Promise<void> => {
         const TIMEOUT_DURATION = 1000;
-
         const controller = new AbortController();
         const signal = controller.signal;
 
@@ -26,22 +33,16 @@ function MarketPrices() {
 
         try {
             const response = await fetch(API_URL, { signal });
-
             clearTimeout(timeoutId);
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const result = await response.json();
+            const result: MarketPricesResponse = await response.json();
             const newPrices = result.Prices || {};
 
             const hasChanged = JSON.stringify(newPrices) !== JSON.stringify(data);
-
-//Interview Tip
-//In an interview, you can mention that JSON.stringify is a "quick and dirty" way to compare objects, 
-//but it has pitfalls like key - ordering.For a more production - ready approach, 
-//you would use a shallow equality function that iterates through keys or a library like Lodash(_.isEqual). 
 
             if (hasChanged) {
                 setPrevData(data);
@@ -51,14 +52,15 @@ function MarketPrices() {
             setLastUpdated(new Date());
             setError(null);
 
-        } catch (e) {
+        } catch (e: unknown) {
             clearTimeout(timeoutId);
-            if (e.name === 'AbortError') {
-                setError(`Request timed out after ${TIMEOUT_DURATION / 1000} seconds.`);
-                console.error("Fetch request aborted due to timeout:", e);
-            } else {
-                setError(e.message);
-                console.error("Failed to fetch market prices:", e);
+            if (e instanceof Error) {
+                if (e.name === 'AbortError') {
+                    setError(`Request timed out after ${TIMEOUT_DURATION / 1000} seconds.`);
+                } else {
+                    setError(e.message);
+                }
+                console.error("Fetch error:", e);
             }
         }
     };
@@ -69,22 +71,22 @@ function MarketPrices() {
         return () => clearInterval(intervalId);
     }, [data]);
 
-    const getPriceChange = (code, currentPrice) => {
+    const getPriceChange = (code: string, currentPrice: number): JSX.Element | null => {
         const previousPrice = prevData[code];
         if (previousPrice === undefined) return null;
 
         const diff = currentPrice - previousPrice;
-        const colorClass = diff ===0 ? '' : diff > 0 ? 'price-up' : 'price-down';
+        const colorClass = diff === 0 ? '' : diff > 0 ? 'price-up' : 'price-down';
         const sign = diff > 0 ? '+' : '';
 
         return (
-            <span>(<span className={colorClass}>
-                {sign}{diff.toFixed(2)}
-            </span>)
+            <span>
+                (<span className={colorClass}>
+                    {sign}{diff.toFixed(2)}
+                </span>)
             </span>
         );
     };
-
 
     return (
         <section className="prices-section">
@@ -93,7 +95,7 @@ function MarketPrices() {
             {error && (
                 <div>
                     <div className="error-message">Error getting latest prices</div>
-                    <div className="retry-message">Automatic retry...</div>
+                    <div className="retry-message">{error} - Automatic retry...</div>
                 </div>
             )}
             <table className="prices-table">
@@ -112,7 +114,9 @@ function MarketPrices() {
                             style={{ cursor: 'pointer' }}
                         >
                             <td className="ticker-column">{code}</td>
-                            <td className="price-column">${price.toFixed(2)} {getPriceChange(code, price)}</td>
+                            <td className="price-column">
+                                ${price.toFixed(2)} {getPriceChange(code, price)}
+                            </td>
                         </tr>
                     ))}
                 </tbody>
