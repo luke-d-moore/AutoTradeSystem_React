@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from 'react';
+import React, { useState, useEffect, type ChangeEvent } from 'react';
 
 interface DropdownProps {
     id: string;
@@ -47,8 +47,6 @@ const DropdownComponent: React.FC<DropdownProps> = ({
         return () => clearInterval(intervalId);
     }, [apiEndpoint]);
 
-    if (error) return <p style={{ color: 'red' }}>Error: {error}</p>;
-
     return (
         <select
             id={id}
@@ -56,11 +54,8 @@ const DropdownComponent: React.FC<DropdownProps> = ({
             value={value || ''}
             onChange={onChange}
             required={required}
-            disabled={isLoading}
         >
-            <option value="">
-                {isLoading ? '-- Loading items... --' : '-- Select an item --'}
-            </option>
+            <option value="">-- Select an item --</option>
             {items.map((item, index) => (
                 <option key={`${item}-${index}`} value={item}>
                     {item}

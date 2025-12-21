@@ -1,10 +1,10 @@
 import { useState } from 'react';
+import { Routes, Route } from "react-router";
 import './App.css';
 import MarketPrices from '../MarketPrices/MarketPrices';
 import TradingStrategyForm from '../TradingStrategyForm/TradingStrategyForm';
 import TradingStrategies from '../TradingStrategies/TradingStrategies';
 import TradingStrategyEditView from '../TradingStrategies/TradingStrategyEdit';
-import { Routes, Route } from "react-router";
 import DetailView from '../MarketPrices/MarketPriceDetails';
 
 function App() {
