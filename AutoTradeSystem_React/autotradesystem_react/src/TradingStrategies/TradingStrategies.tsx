@@ -1,7 +1,8 @@
-import React, { useState, useEffect, JSX } from 'react';
+import React, { useState, useEffect } from 'react';
 import './TradingStrategies.css';
 import deleteIcon from './delete-24.ico';
 import { useNavigate } from 'react-router';
+import { tradingService } from '../services/tradingstrategy.service';
 
 interface RawStrategy {
     Ticker: string;

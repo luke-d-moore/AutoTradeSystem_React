@@ -1,4 +1,4 @@
-import React, { useState, useEffect, type ChangeEvent } from 'react';
+import React, { type ChangeEvent } from 'react';
 
 interface DropdownProps {
     id: string;
@@ -6,8 +6,7 @@ interface DropdownProps {
     value: string;
     onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
     required?: boolean;
-    apiEndpoint: string;
-    dataKey?: string;
+    items: string[];
 }
 
 const DropdownComponent: React.FC<DropdownProps> = ({
@@ -16,44 +15,9 @@ const DropdownComponent: React.FC<DropdownProps> = ({
     value,
     onChange,
     required,
-    apiEndpoint,
-    dataKey
+    items
 }) => {
-    const [items, setItems] = useState<string[]>([]);
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string | null>(null);
 
-    const findArrayInResponse = (data: any): string[] => {
-        if (dataKey && Array.isArray(data[dataKey])) return data[dataKey];
-
-        if (Array.isArray(data)) return data;
-
-        const firstArrayKey = Object.keys(data).find(key => Array.isArray(data[key]));
-        return firstArrayKey ? data[firstArrayKey] : [];
-    };
-
-    const fetchItems = async (): Promise<void> => {
-        try {
-            const response = await fetch(apiEndpoint);
-            if (!response.ok) throw new Error(`HTTP status: ${response.status}`);
-
-            const json = await response.json();
-            const extractedItems = findArrayInResponse(json);
-
-            setItems(extractedItems);
-            setError(null);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'Fetch failed');
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchItems();
-        const intervalId = setInterval(fetchItems, 30000);
-        return () => clearInterval(intervalId);
-    }, [apiEndpoint]);
 
     return (
         <select

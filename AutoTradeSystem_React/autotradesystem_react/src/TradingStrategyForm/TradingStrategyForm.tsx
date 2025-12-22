@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import DropdownComponent from '../DropDownComponent/DropDownComponent';
-import { priceService, TICKERS_API_URL } from '../services/price.service';
+import { priceService } from '../services/price.service';
+import { tradingService } from '../services/tradingstrategy.service';
 
 
 interface TradingStrategy {
@@ -21,9 +22,8 @@ const TradingStrategyForm: React.FC = () => {
         Quantity: 0,
     });
     const [message, setMessage] = useState < string > ('');
-    const [error, setError] = useState < string | null > (null);
-
-    const API_URL = 'https://localhost:7158/api/TradingStrategy';
+    const [error, setError] = useState<string | null>(null);
+    const [tickers, setTickers] = useState<string[]>([]);
 
     useEffect(() => {
         if (message || error) {
@@ -61,6 +61,22 @@ const TradingStrategyForm: React.FC = () => {
         }
     };
 
+    const fetchTickers = async (): Promise<void> => {
+        try {
+            const tickers = await priceService.getTickers();
+            setTickers(tickers.Tickers);
+            setError(null);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Fetch failed');
+        }
+    };
+
+    useEffect(() => {
+        fetchTickers();
+        const intervalId = setInterval(fetchTickers, 30000);
+        return () => clearInterval(intervalId);
+    }, []);
+
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -75,15 +91,10 @@ const TradingStrategyForm: React.FC = () => {
         setError(null);
 
         try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(submissionData),
-            });
+            const response = await tradingService.postStrategy(submissionData);
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to submit strategy');
+            if (!response.success) {
+                throw new Error('Failed to submit strategy');
             }
 
             setMessage('Successfully submitted strategy');
@@ -121,8 +132,7 @@ const TradingStrategyForm: React.FC = () => {
                         value={formData.Ticker}
                         onChange={handleChange}
                         required
-                        apiEndpoint={TICKERS_API_URL}
-                        dataKey = "Tickers"
+                        items={ tickers }
                     />
                 </div>
 
