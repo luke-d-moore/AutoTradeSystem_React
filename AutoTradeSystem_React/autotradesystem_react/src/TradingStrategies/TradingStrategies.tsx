@@ -5,7 +5,7 @@ import deleteIcon from './delete-24.ico';
 import { tradingService, type TradingStrategy } from '../services/tradingstrategy.service';
 
 const TradingStrategies: React.FC = () => {
-    const [orders, setOrders] = useState<TradingStrategy[] > ([]);
+    const [tradingStrategies, setTradingStrategies] = useState<TradingStrategy[] > ([]);
     const [error, setError] = useState < string | null > (null);
     const [deleted, setDeleted] = useState < string | null > (null);
     const [lastUpdated, setLastUpdated] = useState < Date | null > (null);
@@ -24,14 +24,10 @@ const TradingStrategies: React.FC = () => {
         }
 
         try {
-            const response = await tradingService.deleteStrategy(orderId);
-
-            if (!response.success) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
+            await tradingService.deleteStrategy(orderId);
 
             setDeleted(`Successfully deleted strategy!`);
-            setOrders(prev => prev.filter(order => order.id !== orderId));
+            setTradingStrategies(prev => prev.filter(order => order.id !== orderId));
 
         } catch (err: unknown) {
             console.error("Error deleting order:", err);
@@ -44,7 +40,7 @@ const TradingStrategies: React.FC = () => {
             setError(null);
             setDeleted(null);
             const strategies = await tradingService.getStrategies();
-            setOrders(strategies);
+            setTradingStrategies(strategies);
             setLastUpdated(new Date());
         } catch (err: unknown) {
             const msg = err instanceof Error ? err.message : 'Unknown error';
@@ -76,16 +72,16 @@ const TradingStrategies: React.FC = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {orders.map((order, index) => (
-                        <tr key={order.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}
-                            onClick={() => handleRowClick(order)}
+                    {tradingStrategies.map((tradingStrategy, index) => (
+                        <tr key={tradingStrategy.id} className={index % 2 === 0 ? 'even-row' : 'odd-row'}
+                            onClick={() => handleRowClick(tradingStrategy)}
                             style={{ cursor: 'pointer' }}
                         >
-                            <td>{order.ticker}</td>
-                            <td>{order.quantity}</td>
-                            <td>{order.tradeaction}</td>
-                            <td>{order.threshold}</td>
-                            <td>${order.actionPrice}</td>
+                            <td>{tradingStrategy.ticker}</td>
+                            <td>{tradingStrategy.quantity}</td>
+                            <td>{tradingStrategy.tradeaction}</td>
+                            <td>{tradingStrategy.threshold}</td>
+                            <td>${tradingStrategy.actionPrice}</td>
                             <td>
                                 <img
                                     src={deleteIcon}
@@ -93,7 +89,7 @@ const TradingStrategies: React.FC = () => {
                                     className="delete-icon"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        handleDelete(order.id);
+                                        handleDelete(tradingStrategy.id);
                                     }}
                                     style={{ cursor: 'pointer' }}
                                 />

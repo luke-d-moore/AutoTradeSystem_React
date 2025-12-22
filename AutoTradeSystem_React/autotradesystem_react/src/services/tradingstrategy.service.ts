@@ -26,7 +26,7 @@ export interface TradingStrategy {
 export type { TradingStrategy }; 
 
 export const tradingService = {
-    getStrategies: async (): Promise<Order[]> => {
+    getStrategies: async (): Promise<TradingStrategy[]> => {
         try {
             const { data } = await api.get(API_URL);
 
@@ -69,7 +69,7 @@ export const tradingService = {
     updateStrategy: async (id: string, strategy: Strategy) => {
         try {
             const { data } = await api.put(API_URL, [id, strategy]);
-            if (!data.success) throw new Error(data.message || 'Delete Strategy failed');
+            if (!data.success) throw new Error(data.message || 'Update Strategy failed');
             return data;
         } catch (error: any) {
             const msg = error.code === 'ECONNABORTED'
