@@ -1,5 +1,7 @@
 import React, { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import DropdownComponent from '../DropDownComponent/DropDownComponent';
+import { priceService, TICKERS_API_URL } from '../services/price.service';
+
 
 interface TradingStrategy {
     Ticker: string;
@@ -22,7 +24,6 @@ const TradingStrategyForm: React.FC = () => {
     const [error, setError] = useState < string | null > (null);
 
     const API_URL = 'https://localhost:7158/api/TradingStrategy';
-    const TICKER_API_URL = 'https://localhost:7250/api/Price/GetTickers';
 
     useEffect(() => {
         if (message || error) {
@@ -120,7 +121,7 @@ const TradingStrategyForm: React.FC = () => {
                         value={formData.Ticker}
                         onChange={handleChange}
                         required
-                        apiEndpoint={TICKER_API_URL}
+                        apiEndpoint={TICKERS_API_URL}
                         dataKey = "Tickers"
                     />
                 </div>
