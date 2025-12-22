@@ -42,7 +42,7 @@ function MarketPrices() {
         return () => clearInterval(intervalId);
     }, [fetchData]);
 
-    const getPriceChange = (code: string, currentPrice: number): JSX.Element | null => {
+    const getPriceChange = (code: string, currentPrice: number) => {
         const previousPrice = prevData[code];
         if (previousPrice === undefined) return null;
 

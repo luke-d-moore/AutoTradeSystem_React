@@ -6,7 +6,7 @@ type MarketParams = {
     ticker: string;
 };
 
-function DetailView(): JSX.Element {
+function DetailView(){
     const { ticker } = useParams < MarketParams > ();
 
     return (
