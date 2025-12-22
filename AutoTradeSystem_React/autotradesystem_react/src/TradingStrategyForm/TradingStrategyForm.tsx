@@ -121,6 +121,7 @@ const TradingStrategyForm: React.FC = () => {
                         onChange={handleChange}
                         required
                         apiEndpoint={TICKER_API_URL}
+                        dataKey = "Tickers"
                     />
                 </div>
 

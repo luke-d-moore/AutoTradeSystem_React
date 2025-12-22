@@ -7,10 +7,7 @@ interface DropdownProps {
     onChange: (e: ChangeEvent<HTMLSelectElement>) => void;
     required?: boolean;
     apiEndpoint: string;
-}
-
-interface TickerResponse {
-    Tickers: string[];
+    dataKey?: string;
 }
 
 const DropdownComponent: React.FC<DropdownProps> = ({
@@ -19,24 +16,35 @@ const DropdownComponent: React.FC<DropdownProps> = ({
     value,
     onChange,
     required,
-    apiEndpoint
+    apiEndpoint,
+    dataKey
 }) => {
     const [items, setItems] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
+    const findArrayInResponse = (data: any): string[] => {
+        if (dataKey && Array.isArray(data[dataKey])) return data[dataKey];
+
+        if (Array.isArray(data)) return data;
+
+        const firstArrayKey = Object.keys(data).find(key => Array.isArray(data[key]));
+        return firstArrayKey ? data[firstArrayKey] : [];
+    };
+
     const fetchItems = async (): Promise<void> => {
         try {
             const response = await fetch(apiEndpoint);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data: TickerResponse = await response.json();
-            setItems(data.Tickers || []);
-            setIsLoading(false);
+            if (!response.ok) throw new Error(`HTTP status: ${response.status}`);
+
+            const json = await response.json();
+            const extractedItems = findArrayInResponse(json);
+
+            setItems(extractedItems);
+            setError(null);
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-            setError(errorMessage);
+            setError(err instanceof Error ? err.message : 'Fetch failed');
+        } finally {
             setIsLoading(false);
         }
     };

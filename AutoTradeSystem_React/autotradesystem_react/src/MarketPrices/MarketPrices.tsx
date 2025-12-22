@@ -1,22 +1,13 @@
-import React, { useState, useEffect, JSX } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './MarketPrices.css';
+import { priceService, type PriceData } from '../services/price.service';
 import { useNavigate } from 'react-router';
 
-interface PriceData {
-    [ticker: string]: number;
-}
-
-interface MarketPricesResponse {
-    Prices?: PriceData;
-}
-
-const API_URL = 'https://localhost:7250/api/Price/GetAllPrices';
-
-function MarketPrices(): JSX.Element {
-    const [data, setData] = useState < PriceData > ({});
-    const [prevData, setPrevData] = useState < PriceData > ({});
-    const [error, setError] = useState < string | null > (null);
-    const [lastUpdated, setLastUpdated] = useState < Date | null > (null);
+function MarketPrices() {
+    const [data, setData] = useState<PriceData>({});
+    const [prevData, setPrevData] = useState<PriceData>({});
+    const [error, setError] = useState<string | null>(null);
+    const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
     const navigate = useNavigate();
 
@@ -24,59 +15,41 @@ function MarketPrices(): JSX.Element {
         navigate(`/details/${ticker}`);
     };
 
-    const fetchData = async (): Promise<void> => {
-        const TIMEOUT_DURATION = 1000;
-        const controller = new AbortController();
-        const signal = controller.signal;
-
-        const timeoutId = setTimeout(() => controller.abort(), TIMEOUT_DURATION);
-
+    const fetchData = useCallback(async (): Promise<void> => {
         try {
-            const response = await fetch(API_URL, { signal });
-            clearTimeout(timeoutId);
+            const newPrices = await priceService.getPrices();
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const result: MarketPricesResponse = await response.json();
-            const newPrices = result.Prices || {};
-
-            const hasChanged = JSON.stringify(newPrices) !== JSON.stringify(data);
-
-            if (hasChanged) {
-                setPrevData(data);
-                setData(newPrices);
-            }
+            setData(currentData => {
+                if (JSON.stringify(newPrices) !== JSON.stringify(currentData)) {
+                    setPrevData(currentData);
+                    return newPrices;
+                }
+                return currentData;
+            });
 
             setLastUpdated(new Date());
             setError(null);
-
         } catch (e: unknown) {
-            clearTimeout(timeoutId);
             if (e instanceof Error) {
-                if (e.name === 'AbortError') {
-                    setError(`Request timed out after ${TIMEOUT_DURATION / 1000} seconds.`);
-                } else {
-                    setError(e.message);
-                }
-                console.error("Fetch error:", e);
+                setError(e.message);
             }
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchData();
         const intervalId = setInterval(fetchData, 5000);
         return () => clearInterval(intervalId);
-    }, [data]);
+    }, [fetchData]);
 
     const getPriceChange = (code: string, currentPrice: number): JSX.Element | null => {
         const previousPrice = prevData[code];
         if (previousPrice === undefined) return null;
 
         const diff = currentPrice - previousPrice;
-        const colorClass = diff === 0 ? '' : diff > 0 ? 'price-up' : 'price-down';
+        if (diff === 0) return null;
+
+        const colorClass = diff > 0 ? 'price-up' : 'price-down';
         const sign = diff > 0 ? '+' : '';
 
         return (
@@ -93,7 +66,7 @@ function MarketPrices(): JSX.Element {
             <h2>Live Market Prices</h2>
             {lastUpdated && <p>Last updated: {lastUpdated.toLocaleTimeString()}</p>}
             {error && (
-                <div>
+                <div className="error-container">
                     <div className="error-message">Error getting latest prices</div>
                     <div className="retry-message">{error} - Automatic retry...</div>
                 </div>
