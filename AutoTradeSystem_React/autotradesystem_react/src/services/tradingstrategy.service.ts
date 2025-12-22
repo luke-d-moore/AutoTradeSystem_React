@@ -14,7 +14,7 @@ export interface Strategy {
     ActionPrice: number;
 }
 
-export interface Order {
+export interface TradingStrategy {
     id: string;
     ticker: string;
     quantity: number;
@@ -22,6 +22,8 @@ export interface Order {
     tradeaction: string;
     threshold: string;
 }
+
+export type { TradingStrategy }; 
 
 export const tradingService = {
     getStrategies: async (): Promise<Order[]> => {
@@ -42,7 +44,7 @@ export const tradingService = {
                     quantity: TradingStrategy.Quantity,
                     tradeaction: TradingStrategy.TradeAction === 0 ? 'Buy' : 'Sell',
                     threshold,
-                    actionPrice: ActionPrice,
+                    actionPrice: ActionPrice.toFixed(2),
                 };
             });
         } catch (error: any) {
@@ -56,7 +58,9 @@ export const tradingService = {
 
     deleteStrategy: async (id: string) => {
         try {
-            await api.delete(`${API_URL}/${id}`);
+            const { data } = await api.delete(`${API_URL}/${id}`);
+            if (!data.success) throw new Error(data.message || 'Delete Strategy failed');
+            return data;
         } catch (error) {
             console.error(`Error deleting strategy ${id}:`, error);
         }
@@ -64,7 +68,9 @@ export const tradingService = {
 
     updateStrategy: async (id: string, strategy: Strategy) => {
         try {
-            await api.put(API_URL, [id, strategy]);
+            const { data } = await api.put(API_URL, [id, strategy]);
+            if (!data.success) throw new Error(data.message || 'Delete Strategy failed');
+            return data;
         } catch (error: any) {
             const msg = error.code === 'ECONNABORTED'
                 ? 'Request timed out'

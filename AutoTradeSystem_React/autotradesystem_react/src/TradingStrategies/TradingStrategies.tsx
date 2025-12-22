@@ -1,50 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import './TradingStrategies.css';
 import deleteIcon from './delete-24.ico';
-import { useNavigate } from 'react-router';
-import { tradingService } from '../services/tradingstrategy.service';
-
-interface RawStrategy {
-    Ticker: string;
-    Quantity: number;
-    TradeAction: number;
-}
-
-interface StrategyDetails {
-    TradingStrategy: RawStrategy;
-    OriginalPrice: number;
-    ActionPrice: number;
-}
-
-interface ApiResponse {
-    success: boolean;
-    message?: string;
-    TradingStrategies: { [key: string]: StrategyDetails };
-}
-
-interface TransformedOrder {
-    id: string;
-    ticker: string;
-    quantity: number;
-    tradeaction: 'Buy' | 'Sell';
-    threshold: string;
-    actionPrice: string;
-}
+import { tradingService, type TradingStrategy } from '../services/tradingstrategy.service';
 
 const TradingStrategies: React.FC = () => {
-    const [orders, setOrders] = useState < TransformedOrder[] > ([]);
-    const [loading, setLoading] = useState < boolean > (true);
+    const [orders, setOrders] = useState<TradingStrategy[] > ([]);
     const [error, setError] = useState < string | null > (null);
     const [deleted, setDeleted] = useState < string | null > (null);
     const [lastUpdated, setLastUpdated] = useState < Date | null > (null);
 
-    const API_URL = 'https://localhost:7158/api/TradingStrategy';
     const POLLING_INTERVAL = 5000;
 
     const navigate = useNavigate();
 
-    const handleRowClick = (order: TransformedOrder): void => {
-        navigate(`/tradingStrategyEdit/`, { state: { order } });
+    const handleRowClick = (tradingStrategy: TradingStrategy): void => {
+        navigate(`/tradingStrategyEdit/`, { state: { tradingStrategy } });
     };
 
     const handleDelete = async (orderId: string): Promise<void> => {
@@ -53,14 +24,9 @@ const TradingStrategies: React.FC = () => {
         }
 
         try {
-            const response = await fetch(`${API_URL}/${orderId}`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
+            const response = await tradingService.deleteStrategy(orderId);
 
-            if (!response.ok) {
+            if (!response.success) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
@@ -77,42 +43,12 @@ const TradingStrategies: React.FC = () => {
         try {
             setError(null);
             setDeleted(null);
-            const response = await fetch(API_URL);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data: ApiResponse = await response.json();
-
-            if (data.success && data.TradingStrategies) {
-                const transformedOrders: TransformedOrder[] = Object.entries(data.TradingStrategies).map(([id, strategyDetails]) => {
-                    const strategy = strategyDetails.TradingStrategy;
-                    const originalPrice = strategyDetails.OriginalPrice;
-                    const actionPrice = strategyDetails.ActionPrice.toFixed(2);
-
-                    const threshold = originalPrice > 0
-                        ? (((strategyDetails.ActionPrice - originalPrice) / originalPrice) * 100).toFixed(2) + '%'
-                        : 'N/A';
-
-                    return {
-                        id: id,
-                        ticker: strategy.Ticker,
-                        quantity: strategy.Quantity,
-                        tradeaction: strategy.TradeAction === 0 ? 'Buy' : 'Sell',
-                        threshold: threshold,
-                        actionPrice: actionPrice,
-                    };
-                });
-                setOrders(transformedOrders);
-                setLastUpdated(new Date());
-            } else {
-                setError(data.message || "Failed to retrieve successful data");
-            }
+            const strategies = await tradingService.getStrategies();
+            setOrders(strategies);
+            setLastUpdated(new Date());
         } catch (err: unknown) {
             const msg = err instanceof Error ? err.message : 'Unknown error';
             setError(msg);
-        } finally {
-            setLoading(false);
         }
     };
 

@@ -1,26 +1,19 @@
 import React from 'react';
 import './TradingStrategyEdit.css';
 import { useLocation } from 'react-router';
-
-interface Order {
-    ticker: string;
-    actionPrice: number;
-    quantity: number;
-    tradeaction: string | number; 
-    threshold: number;
-}
+import { tradingService, type TradingStrategy } from '../services/tradingstrategy.service';
 
 interface LocationState {
-    order: Order;
+    tradingStrategy: TradingStrategy;
 }
 
-function TradingStrategyEditView(): React.JSX.Element {
+function TradingStrategyEditView() {
     const location = useLocation();
 
     const state = location.state as LocationState | null;
-    const order = state?.order;
+    const tradingStrategy = state?.tradingStrategy;
 
-    if (!order) {
+    if (!tradingStrategy) {
         return (
             <div className="error-container">
                 No order data found. Please select a strategy from the list.
@@ -39,19 +32,19 @@ function TradingStrategyEditView(): React.JSX.Element {
             </div>
             <div className="details-grid">
                 <div>
-                    <h3>Ticker: {order.ticker}</h3>
+                    <h3>Ticker: {tradingStrategy.ticker}</h3>
                 </div>
                 <div>
-                    <h3>Action Price ($): {order.actionPrice}</h3>
+                    <h3>Action Price ($): {tradingStrategy.actionPrice}</h3>
                 </div>
                 <div>
-                    <h3>Quantity: {order.quantity}</h3>
+                    <h3>Quantity: {tradingStrategy.quantity}</h3>
                 </div>
                 <div>
-                    <h3>Trade Action: {order.tradeaction}</h3>
+                    <h3>Trade Action: {tradingStrategy.tradeaction}</h3>
                 </div>
                 <div>
-                    <h3>Threshold (%): {order.threshold}</h3>
+                    <h3>Threshold (%): {tradingStrategy.threshold}</h3>
                 </div>
             </div>
         </section>
