@@ -62,6 +62,17 @@ export const tradingService = {
         }
     },
 
+    updateStrategy: async (id: string, strategy: Strategy) => {
+        try {
+            await api.put(API_URL, [id, strategy]);
+        } catch (error: any) {
+            const msg = error.code === 'ECONNABORTED'
+                ? 'Request timed out'
+                : (error.response?.data?.message || error.message || 'Network error');
+            throw new Error(msg);
+        }
+    },
+
     postStrategy: async (strategy: Strategy) => {
         try {
             const { data } = await api.post(API_URL, strategy);
