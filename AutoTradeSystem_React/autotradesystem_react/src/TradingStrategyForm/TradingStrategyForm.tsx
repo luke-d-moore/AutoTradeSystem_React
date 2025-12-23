@@ -3,7 +3,6 @@ import DropdownComponent from '../DropDownComponent/DropDownComponent';
 import { priceService } from '../services/price.service';
 import { tradingService } from '../services/tradingstrategy.service';
 
-
 interface TradingStrategy {
     Ticker: string;
     TradeAction: number;
@@ -24,6 +23,16 @@ const TradingStrategyForm: React.FC = () => {
     const [message, setMessage] = useState < string > ('');
     const [error, setError] = useState<string | null>(null);
     const [tickers, setTickers] = useState<string[]>([]);
+
+    const isFormInvalid = () => {
+        const hasTicker = formData.Ticker.trim() !== '';
+        const hasQuantity = formData.Quantity > 0;
+        const hasValidPrice = usePriceChange
+            ? formData.PriceChange > 0
+            : formData.ActionPrice > 0;
+
+        return !hasTicker || !hasQuantity || !hasValidPrice;
+    };
 
     useEffect(() => {
         if (message || error) {
@@ -123,7 +132,7 @@ const TradingStrategyForm: React.FC = () => {
                 <label>Use Specific Action Price</label>
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="tradingStrategySubmission-form">
                 <div className="form-field">
                     <label htmlFor="Ticker">Ticker:</label>
                     <DropdownComponent
@@ -155,6 +164,7 @@ const TradingStrategyForm: React.FC = () => {
                             value={formData.PriceChange}
                             onChange={handleChange}
                             required
+                            min="0.01"
                         />
                     </div>
                 ) : (
@@ -168,6 +178,7 @@ const TradingStrategyForm: React.FC = () => {
                             value={formData.ActionPrice}
                             onChange={handleChange}
                             required
+                            min="0.01"
                         />
                     </div>
                 )}
@@ -181,9 +192,10 @@ const TradingStrategyForm: React.FC = () => {
                         value={formData.Quantity}
                         onChange={handleChange}
                         required
+                        min="1"
                     />
                 </div>
-                <button type="submit">Submit Strategy</button>
+                <button type="submit" disabled={isFormInvalid()}>Submit Strategy</button>
             </form>
 
             {message && <p style={{ color: 'green' }}>{message}</p>}

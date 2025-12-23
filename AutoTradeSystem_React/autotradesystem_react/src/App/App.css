@@ -26,9 +26,9 @@ h1, h2 {
     margin-bottom: 2rem;
 }
 
-.order-form {
+.tradingStrategySubmission-form {
     display: grid;
-    gap: 1.5rem;
+    gap: 1rem;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     align-items: end;
 }
@@ -41,7 +41,6 @@ h1, h2 {
 .form-field {
     display: flex;
     flex-direction: column;
-    padding-bottom:15px;
 }
 
 .form-field label {
@@ -65,7 +64,7 @@ h1, h2 {
     justify-content: flex-end;
 }
 
-.order-form button {
+.tradingStrategySubmission-form button {
     background-color: lightskyblue;
     padding: 1rem 1.5rem;
     border: none;
@@ -75,8 +74,13 @@ h1, h2 {
     transition: background-color 0.3s ease;
 }
 
-.order-form button:hover {
-    background-color: black;
+.tradingStrategySubmission-form button:hover:not(:disabled) {
+    background-color: deepskyblue;
+}
+
+.tradingStrategySubmission-form button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
 
 .container {
@@ -84,7 +88,7 @@ h1, h2 {
 }
 
 @media (max-width: 600px) {
-    .order-form {
+    .tradingStrategySubmission-form {
         grid-template-columns: 1fr;
     }
 }
@@ -150,7 +154,7 @@ h1, h2 {
 }
 
 input:checked + .slider {
-    background-color: #2196F3;
+    background-color: deepskyblue;
 }
 
 input:checked + .slider:before {
