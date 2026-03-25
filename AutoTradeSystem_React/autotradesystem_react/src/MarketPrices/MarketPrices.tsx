@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import './MarketPrices.css';
 import { priceService, type PriceData } from '../services/price.service';
 import { useNavigate } from 'react-router';
@@ -15,32 +15,31 @@ function MarketPrices() {
         navigate(`/details/${ticker}`);
     };
 
-    const fetchData = useCallback(async (): Promise<void> => {
-        try {
-            const newPrices = await priceService.getPrices();
-
-            setData(currentData => {
-                if (JSON.stringify(newPrices) !== JSON.stringify(currentData)) {
-                    setPrevData(currentData);
-                    return newPrices;
-                }
-                return currentData;
-            });
-
-            setLastUpdated(new Date());
-            setError(null);
-        } catch (e: unknown) {
-            if (e instanceof Error) {
-                setError(e.message);
-            }
-        }
-    }, []);
-
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const newPrices = await priceService.getPrices();
+
+                setData(currentData => {
+                    if (JSON.stringify(newPrices) !== JSON.stringify(currentData)) {
+                        setPrevData(currentData);
+                        return newPrices;
+                    }
+                    return currentData;
+                });
+
+                setLastUpdated(new Date());
+                setError(null);
+            } catch (e: unknown) {
+                if (e instanceof Error) {
+                    setError(e.message);
+                }
+            }
+        };
         fetchData();
         const intervalId = setInterval(fetchData, 5000);
         return () => clearInterval(intervalId);
-    }, [fetchData]);
+    }, []);
 
     const getPriceChange = (code: string, currentPrice: number) => {
         const previousPrice = prevData[code];
