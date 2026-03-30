@@ -15,6 +15,25 @@ function MarketPrices() {
         navigate(`/details/${ticker}`);
     };
 
+//const [data, setData] = useState<{ previous: PriceData; current: PriceData; lastUpdated: Date }>({
+//     previous: {},
+//     current: {},
+//     lastUpdated: new Date()
+// });
+//     setData(prev => {
+//     // Check if data actually changed (Use a better check than stringify if possible!)
+//     if (JSON.stringify(newPrices) === JSON.stringify(prev.current)) {
+//         return prev; // Return EXACT SAME reference -> No re-render!
+//     }
+
+//     // Atomic update: Everything changes at the same moment
+//     return {
+//         previous: prev.current,
+//         current: newPrices,
+//         lastUpdated: new Date()
+//     };
+
+
     useEffect(() => {
         const fetchData = async () => {
             try {
